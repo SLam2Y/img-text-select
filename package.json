@@ -1,0 +1,17 @@
+{
+  "name": "img-text-select",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "setup": "bash scripts/setup.sh",
+    "test": "node --test \"test/unit/*.test.mjs\"",
+    "fixtures": "node test/make-fixtures.mjs",
+    "e2e": "node test/e2e.mjs",
+    "pack": "rm -f dist.zip && zip -qr dist.zip manifest.json src vendor models"
+  },
+  "devDependencies": {
+    "onnxruntime-web": "1.30.0",
+    "paddleocr": "1.2.0",
+    "playwright": "1.64.1"
+  }
+}
