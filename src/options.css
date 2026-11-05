@@ -1,0 +1,158 @@
+@font-face {
+  font-family: 'Unbounded';
+  src: url('fonts/unbounded-cyrillic.woff2') format('woff2');
+  font-weight: 200 900;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Unbounded';
+  src: url('fonts/unbounded-latin.woff2') format('woff2');
+  font-weight: 200 900;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2212;
+}
+
+:root {
+  --ink: #1E2147;
+  --paper: #FBFBFE;
+  --marker: #FFD93D;
+  --text: #1E2147;
+  --muted: #5B5F86;
+  --line: #DCDDEB;
+  --field: #FFFFFF;
+  --tone: rgba(251, 251, 254, .16);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #15172E;
+    --text: #ECEDF8;
+    --muted: #A3A6C8;
+    --line: #34375E;
+    --field: #1E2147;
+    color-scheme: dark;
+  }
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--text);
+  font: 14px/1.5 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Same file serves the toolbar popup (fixed width) and the options tab (centred column). */
+.sheet { width: 360px; margin: 0 auto; }
+@media (min-width: 480px) { .sheet { margin-block: 48px; border: 1px solid var(--line); border-radius: 18px; overflow: hidden; } }
+
+.mast {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 22px 20px 20px;
+  background-color: var(--ink);
+  /* screentone: dots fading out toward the bottom-left, like a printed manga panel */
+  background-image: radial-gradient(var(--tone) 1.3px, transparent 1.6px);
+  background-size: 7px 7px;
+  color: var(--paper);
+  position: relative;
+}
+.mast::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(200deg, transparent 15%, var(--ink) 75%);
+  pointer-events: none;
+}
+.mast > * { position: relative; z-index: 1; }
+.mast img { flex: none; }
+.mast h1 {
+  margin: 0;
+  font: 600 19px/1.15 'Unbounded', system-ui, sans-serif;
+  letter-spacing: -.01em;
+  color: #FBFBFE;
+}
+.mast p { margin: 4px 0 0; color: #C9CBE6; font-size: 13px; }
+
+.how {
+  margin: 0;
+  padding: 18px 20px 4px 20px;
+  list-style: none;
+  counter-reset: step;
+  display: grid;
+  gap: 10px;
+}
+.how li {
+  counter-increment: step;
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 10px;
+  align-items: baseline;
+}
+.how li::before {
+  content: counter(step);
+  font: 600 12px/22px 'Unbounded', system-ui, sans-serif;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  text-align: center;
+  background: var(--marker);
+  color: #1E2147;
+}
+.t-badge {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  margin: 0 1px;
+  border-radius: 6px;
+  background: #1E2147;
+  color: var(--marker);
+  font: 700 12px/1 'Unbounded', system-ui, sans-serif;
+  vertical-align: -3px;
+}
+
+.settings { padding: 14px 20px 6px; display: grid; gap: 16px; }
+.field { display: grid; gap: 6px; margin: 0; padding: 0; border: 0; min-width: 0; }
+.field > span, .field > legend { font-weight: 600; font-size: 13px; padding: 0; }
+.field > legend { margin-bottom: 6px; }
+
+select {
+  font: inherit;
+  color: inherit;
+  background: var(--field);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 9px 12px;
+  width: 100%;
+}
+
+.seg { display: grid; gap: 6px; }
+.seg label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--field);
+  cursor: pointer;
+}
+.seg input { margin: 0; accent-color: #1E2147; }
+@media (prefers-color-scheme: dark) { .seg input { accent-color: var(--marker); } }
+.seg label:has(input:checked) { border-color: var(--text); box-shadow: inset 4px 0 0 var(--marker); }
+
+select:focus-visible, .seg label:has(input:focus-visible) { outline: 3px solid var(--marker); outline-offset: 2px; }
+
+.saved { margin: -10px 0 -6px; min-height: 1.5em; font-size: 12px; color: var(--muted); transition: opacity .4s; }
+.saved:empty { opacity: 0; }
+
+.note {
+  margin: 8px 20px 20px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) { .saved { transition: none; } }

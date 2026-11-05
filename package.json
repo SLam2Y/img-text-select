@@ -7,7 +7,7 @@
     "test": "node --test \"test/unit/*.test.mjs\"",
     "fixtures": "node test/make-fixtures.mjs",
     "e2e": "node test/e2e.mjs",
-    "pack": "rm -f dist.zip && zip -qr dist.zip manifest.json src vendor models"
+    "pack": "rm -f dist.zip && zip -qr dist.zip manifest.json src vendor models icons/*.png"
   },
   "devDependencies": {
     "onnxruntime-web": "1.30.0",

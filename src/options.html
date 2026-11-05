@@ -1,25 +1,62 @@
 <!doctype html>
+<html lang="ru">
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Image Text Select</title>
-<style>
-  body { font: 14px system-ui, sans-serif; margin: 24px; display: grid; gap: 14px; max-width: 420px; }
-  label { display: grid; gap: 4px; }
-</style>
-<label>Переводить на
-  <select id="to">
-    <option value="ru">Русский</option>
-    <option value="en">English</option>
-    <option value="uk">Українська</option>
-    <option value="ro">Română</option>
-    <option value="de">Deutsch</option>
-    <option value="es">Español</option>
-    <option value="fr">Français</option>
-  </select>
-</label>
-<label>Текст на картинках
-  <select id="lang">
-    <option value="zh">Английский, китайский, японский</option>
-    <option value="ko">Корейский (и английский)</option>
-  </select>
-</label>
-<script src="options.js"></script>
+<link rel="icon" href="../icons/icon-32.png">
+<link rel="stylesheet" href="options.css">
+<body>
+  <main class="sheet">
+    <header class="mast">
+      <img src="../icons/icon-128.png" alt="" width="52" height="52">
+      <div>
+        <h1>Image Text Select</h1>
+        <p>Выделяй текст прямо на картинках.</p>
+      </div>
+    </header>
+
+    <ol class="how">
+      <li><span>Наведи мышь на картинку с текстом.</span></li>
+      <li><span>Нажми <span class="t-badge" aria-hidden="true">T</span> в её углу и подожди пару секунд.</span></li>
+      <li><span>Выдели текст мышью, появятся «Копировать» и «Перевести».</span></li>
+    </ol>
+
+    <form class="settings">
+      <label class="field">
+        <span>Переводить на</span>
+        <select id="to">
+          <option value="ru">Русский</option>
+          <option value="uk">Українська</option>
+          <option value="en">English</option>
+          <option value="ro">Română</option>
+          <option value="de">Deutsch</option>
+          <option value="fr">Français</option>
+          <option value="es">Español</option>
+          <option value="it">Italiano</option>
+          <option value="pt">Português</option>
+          <option value="pl">Polski</option>
+          <option value="tr">Türkçe</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="zh-CN">中文</option>
+        </select>
+      </label>
+
+      <fieldset class="field">
+        <legend>Язык текста на картинках</legend>
+        <div class="seg">
+          <label><input type="radio" name="lang" value="zh"><span>Английский, китайский, японский</span></label>
+          <label><input type="radio" name="lang" value="ko"><span>Корейский</span></label>
+        </div>
+      </fieldset>
+
+      <p class="saved" id="saved" role="status" aria-live="polite"></p>
+    </form>
+
+    <footer class="note">
+      Картинки распознаются прямо на твоём компьютере. В Google Переводчик уходит только тот текст, который ты переводишь.
+    </footer>
+  </main>
+  <script src="options.js"></script>
+</body>
+</html>

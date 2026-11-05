@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <pattern id="dots" width="7" height="7" patternUnits="userSpaceOnUse">
+      <circle cx="3.5" cy="3.5" r="1.4" fill="#FBFBFE" fill-opacity=".22"/>
+    </pattern>
+    <linearGradient id="fade" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset=".55" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <mask id="fadeMask"><rect width="128" height="128" fill="url(#fade)"/></mask>
+  </defs>
+  <!-- speech bubble -->
+  <path d="M38 14h52c15.5 0 28 12.5 28 28v20c0 15.5-12.5 28-28 28H52l-24 22 4-22h2C18.5 90 10 77.5 10 62V42c0-15.5 12.5-28 28-28z" fill="#1E2147" stroke="#FBFBFE" stroke-width="5" stroke-linejoin="round" paint-order="stroke"/>
+  <!-- screentone in the corner -->
+  <path d="M38 14h52c15.5 0 28 12.5 28 28v20c0 15.5-12.5 28-28 28H52l-24 22 4-22h2C18.5 90 10 77.5 10 62V42c0-15.5 12.5-28 28-28z" fill="url(#dots)" mask="url(#fadeMask)"/>
+  <!-- highlighter stroke -->
+  <path d="M30 44l62-3c3 0 5 2 5 5v14c0 3-2 5-5 5l-62 3c-3 0-5-2-5-5V49c0-3 2-5 5-5z" fill="#FFD93D"/>
+  <!-- text caret (I-beam) -->
+  <path d="M92 32v44M85 32h14M85 76h14" stroke="#FBFBFE" stroke-width="5" stroke-linecap="round" fill="none"/>
+</svg>

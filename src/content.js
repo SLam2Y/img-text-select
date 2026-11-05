@@ -12,20 +12,29 @@
   host.style.cssText = 'all:initial;position:absolute;top:0;left:0;z-index:2147483647';
   const root = host.attachShadow({ mode: 'open' });
   root.innerHTML = `<style>
-    .t, .pop { position: absolute; font: 13px/1.35 system-ui, sans-serif; }
-    .t { min-width: 26px; height: 26px; padding: 0 7px; border: 0; border-radius: 6px; cursor: pointer;
-         background: #1a73e8; color: #fff; box-shadow: 0 1px 4px #0005; white-space: nowrap; }
-    .pop { max-width: 360px; padding: 8px; border-radius: 8px; background: #fff; color: #202124; box-shadow: 0 2px 12px #0004; }
+    .t, .pop { position: absolute; font: 13px/1.4 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+    .t { min-width: 28px; height: 28px; padding: 0 8px; border: 0; border-radius: 8px; cursor: pointer; white-space: nowrap;
+         background: #1E2147; color: #FFD93D; font-weight: 700; font-size: 14px;
+         box-shadow: 0 0 0 1.5px #FBFBFE, 0 3px 10px rgba(30, 33, 71, .35); }
+    .t:hover { background: #2A2E60; }
+    .t:focus-visible, .row button:focus-visible { outline: 3px solid #FFD93D; outline-offset: 2px; }
+    .pop { width: max-content; max-width: 340px; padding: 10px; border-radius: 12px; border: 1px solid #DCDDEB;
+           background: #FBFBFE; color: #1E2147; box-shadow: 0 10px 28px rgba(30, 33, 71, .22); }
     .row { display: flex; gap: 6px; }
-    .row button { font: inherit; padding: 4px 10px; border: 1px solid #dadce0; border-radius: 6px; background: #f8f9fa; color: inherit; cursor: pointer; }
-    .out { margin-top: 6px; white-space: pre-wrap; }
+    .row button { font: inherit; font-weight: 600; padding: 6px 12px; border-radius: 8px; cursor: pointer;
+                  border: 1px solid #DCDDEB; background: transparent; color: inherit; }
+    .row button:hover { background: #EEEFF8; }
+    .row [data-a="tr"] { background: #FFD93D; border-color: #FFD93D; color: #1E2147; }
+    .row [data-a="tr"]:hover { background: #FFE266; }
+    .out { margin-top: 10px; padding-top: 10px; border-top: 1px solid #DCDDEB; font-size: 14px; line-height: 1.45; white-space: pre-wrap; }
     .out:empty { display: none; }
-    a { color: #1a73e8; }
+    a { color: inherit; }
     [hidden] { display: none !important; }
     @media (prefers-color-scheme: dark) {
-      .pop { background: #2d2e31; color: #e8eaed; }
-      .row button { background: #3c4043; border-color: #5f6368; }
-      a { color: #8ab4f8; }
+      .pop { background: #1E2147; color: #ECEDF8; border-color: #34375E; }
+      .row button { border-color: #34375E; }
+      .row button:hover { background: #2A2E60; }
+      .out { border-color: #34375E; }
     }
   </style>
   <button class="t" hidden>T</button>
