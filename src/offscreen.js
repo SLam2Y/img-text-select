@@ -26,7 +26,7 @@ function service(lang) {
       ort,
       modelPreset: 'PP-OCRv5_mobile',
       detection: { modelBuffer: det },
-      recognition: { modelBuffer: rec, charactersDictionary: dict.trimEnd().split(/\r?\n/) },
+      recognition: { modelBuffer: rec, charactersDictionary: [...dict.trimEnd().split(/\r?\n/), ' '] }, // model has a trailing space class
     });
   })());
 }
