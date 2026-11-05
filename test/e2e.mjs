@@ -31,7 +31,8 @@ for (const [id, f] of Object.entries(FIXTURES)) {
   await page.goto(`${base}/page.html`);
   const img = page.locator(`#${id}`);
   await img.scrollIntoViewIfNeeded();
-  await img.hover();
+  const box = await img.boundingBox(); // mouse, not hover(): the webtoon sits under an overlay
+  await page.mouse.move(box.x + box.width / 2, Math.max(box.y, 0) + 60);
   await page.locator('button.t').click();
   const t0 = Date.now();
   const line = page.locator('.its-line').first();
@@ -39,7 +40,10 @@ for (const [id, f] of Object.entries(FIXTURES)) {
     await line.waitFor({ timeout: 60_000 });
     console.log(`${id}: OCR ${Date.now() - t0} ms`);
     const text = (await page.locator('.its-layer').innerText()).replace(/\s+/g, '');
-    check(text.includes(f.expect.replace(/\s+/g, '')), `${id}: OCR "${text}" contains "${f.expect}"`);
+    for (const want of [f.expect].flat()) {
+      const n = text.split(want.replace(/\s+/g, '')).length - 1;
+      check(n === 1, `${id}: OCR "${text.slice(0, 120)}" contains "${want}" once (found ${n})`);
+    }
   } catch {
     check(false, `${id}: no text layer, button says "${await page.locator('button.t').innerText()}"`);
     await page.close();

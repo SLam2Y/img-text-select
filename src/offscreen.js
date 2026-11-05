@@ -1,6 +1,7 @@
 import * as ort from '../vendor/ort/ort.wasm.min.mjs';
 import { PaddleOcrService } from '../vendor/paddleocr.mjs';
 import { toLines } from './lines.js';
+import { slices, inCore } from './slices.js';
 
 ort.env.wasm.wasmPaths = chrome.runtime.getURL('vendor/ort/');
 // ponytail: single thread; threads need crossOriginIsolated. Enable COOP/COEP if OCR feels slow.
@@ -10,7 +11,9 @@ const MODELS = {
   zh: ['models/rec.onnx', 'models/dict.txt'],
   ko: ['models/korean_rec.onnx', 'models/korean_dict.txt'],
 };
-const MAX_SIDE = 2500;
+// Cap the short side (not the long one: webtoon strips are 900×12000+) and total pixels.
+const MAX_SHORT_SIDE = 2500;
+const MAX_PIXELS = 40e6;
 const services = {};
 
 const asset = path => fetch(chrome.runtime.getURL(path));
@@ -41,7 +44,7 @@ async function decode(url) {
   } catch (e) {
     throw new Error(`load: ${e.message}`);
   }
-  const s = Math.min(1, MAX_SIDE / Math.max(bitmap.width, bitmap.height));
+  const s = Math.min(1, MAX_SHORT_SIDE / Math.min(bitmap.width, bitmap.height), Math.sqrt(MAX_PIXELS / (bitmap.width * bitmap.height)));
   const w = Math.round(bitmap.width * s), h = Math.round(bitmap.height * s);
   const ctx = new OffscreenCanvas(w, h).getContext('2d');
   ctx.imageSmoothingQuality = 'high';
@@ -51,10 +54,20 @@ async function decode(url) {
   return { width, height, data: new Uint8Array(data.buffer) };
 }
 
+async function recognize(image, ocr) {
+  const results = [];
+  for (const s of slices(image.width, image.height)) {
+    const rowBytes = image.width * 4;
+    const part = { width: image.width, height: s.bottom - s.top, data: image.data.subarray(s.top * rowBytes, s.bottom * rowBytes) };
+    results.push(...inCore(await ocr.recognize(part), s));
+  }
+  return results;
+}
+
 chrome.runtime.onMessage.addListener((msg, _sender, reply) => {
   if (msg.target !== 'offscreen') return;
   Promise.all([decode(msg.url), service(msg.lang)])
-    .then(([image, ocr]) => ocr.recognize(image).then(results => reply({ lines: toLines(results), width: image.width })))
+    .then(([image, ocr]) => recognize(image, ocr).then(results => reply({ lines: toLines(results), width: image.width })))
     .catch(e => { console.error(e); reply({ error: String(e?.message ?? e) }); });
   return true;
 });

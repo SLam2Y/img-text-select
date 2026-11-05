@@ -41,24 +41,38 @@
   const place = (el, x, y) => { el.style.left = `${x + scrollX}px`; el.style.top = `${y + scrollY}px`; };
 
   // --- «T» button on hover ---
+  // Hit-test by geometry, not event target: manga readers cover images with overlays
+  // or set pointer-events:none on them.
   let target = null;
-  let hideTimer;
-  document.addEventListener('mouseover', e => {
-    const img = e.target;
-    if (img.tagName !== 'IMG' || img.width < MIN_SIZE || img.height < MIN_SIZE || layers.has(img)) return;
+  let hideTimer = null;
+  let mouse = null;
+  let hoverRaf = 0;
+  let onButton = false;
+  const imageAt = (x, y) => [...document.images].find(img => {
+    if (img.width < MIN_SIZE || img.height < MIN_SIZE) return false;
+    const r = img.getBoundingClientRect();
+    return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+  });
+  const hideSoon = () => {
+    if (!btn.hidden && !hideTimer) hideTimer = setTimeout(() => { btn.hidden = true; hideTimer = null; }, 600);
+  };
+  function onHover() {
+    hoverRaf = 0;
+    const img = imageAt(mouse.x, mouse.y);
+    if (!img || layers.has(img)) { if (!onButton) hideSoon(); return; }
     clearTimeout(hideTimer);
-    target = img;
-    btn.textContent = 'T';
-    btn.title = 'Выделить текст';
+    hideTimer = null;
+    if (img !== target) { target = img; btn.textContent = 'T'; btn.title = 'Выделить текст'; }
     btn.hidden = false;
     const r = img.getBoundingClientRect();
-    place(btn, r.right - 32, r.top + 6);
-  }, true);
-  document.addEventListener('mouseout', e => {
-    if (e.target === target) hideTimer = setTimeout(() => (btn.hidden = true), 600);
-  }, true);
-  btn.addEventListener('mouseenter', () => clearTimeout(hideTimer));
-  btn.addEventListener('mouseleave', () => (hideTimer = setTimeout(() => (btn.hidden = true), 600)));
+    // Keep the button on screen for tall webtoon strips.
+    place(btn, r.right - 32, Math.min(Math.max(r.top, 0), r.bottom - 32) + 6);
+  }
+  const queueHover = () => { if (mouse && !hoverRaf) hoverRaf = requestAnimationFrame(onHover); };
+  document.addEventListener('mousemove', e => { mouse = { x: e.clientX, y: e.clientY }; queueHover(); }, { capture: true, passive: true });
+  addEventListener('scroll', queueHover, { capture: true, passive: true });
+  btn.addEventListener('mouseenter', () => { onButton = true; clearTimeout(hideTimer); hideTimer = null; });
+  btn.addEventListener('mouseleave', () => { onButton = false; hideSoon(); });
 
   btn.addEventListener('click', async () => {
     const img = target;
