@@ -92,6 +92,7 @@
   const cache = new Map();
   // Fetch from the page first: same-origin, blob:, data: and CORS images work with the page's cookies/Referer.
   const toDataUrl = async url => {
+    if (!/^(blob|data):/.test(url) && new URL(url).origin !== location.origin) return url; // cross-origin: CORS would fail, skip the console noise
     try {
       const blob = await (await fetch(url)).blob();
       return await new Promise((ok, no) => {

@@ -3,7 +3,7 @@
   "name": "Image Text Select",
   "version": "0.1.0",
   "description": "Выделяй текст на картинках как обычный, копируй и переводи.",
-  "permissions": ["offscreen", "storage"],
+  "permissions": ["offscreen", "storage", "declarativeNetRequestWithHostAccess"],
   "host_permissions": ["<all_urls>"],
   "background": { "service_worker": "src/background.js", "type": "module" },
   "content_scripts": [{

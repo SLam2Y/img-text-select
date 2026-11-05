@@ -7,10 +7,18 @@ import { FIXTURES } from './make-fixtures.mjs';
 
 const ext = resolve('.');
 const types = { '.html': 'text/html; charset=utf-8', '.png': 'image/png' };
+// /protected/* mimics a hotlink-protected CDN: 403 unless Referer is the page origin.
+// Page is served on localhost, protected images on 127.0.0.1 so they are cross-origin.
 const server = createServer(async (req, res) => {
   try {
-    const body = await readFile(join(resolve('test'), decodeURIComponent(new URL(req.url, 'http://x').pathname)));
-    res.writeHead(200, { 'content-type': types[extname(req.url)] ?? 'application/octet-stream' }).end(body);
+    let path = decodeURIComponent(new URL(req.url, 'http://x').pathname);
+    if (path.startsWith('/protected/')) {
+      if (!req.headers.referer?.startsWith(base)) return res.writeHead(403).end();
+      path = path.replace('/protected/', '/fixtures/');
+    }
+    let body = await readFile(join(resolve('test'), path));
+    if (path.endsWith('.html')) body = String(body).replaceAll('{{ALT}}', `http://127.0.0.1:${server.address().port}`);
+    res.writeHead(200, { 'content-type': types[extname(path)] ?? 'application/octet-stream' }).end(body);
   } catch { res.writeHead(404).end(); }
 }).listen(0);
 const base = `http://localhost:${server.address().port}`;

@@ -12,6 +12,8 @@ export const FIXTURES = {
     lines: [[100, 'TOP OF THE STRIP'], [880, 'CROSSING THE BOUNDARY'], [3000, 'MIDDLE OF THE STRIP'], [5850, 'BOTTOM OF THE STRIP']],
     expect: ['TOP OF THE STRIP', 'CROSSING THE BOUNDARY', 'MIDDLE OF THE STRIP', 'BOTTOM OF THE STRIP'],
   },
+  // en.png from a cross-origin, hotlink-protected host (page.html: {{ALT}}/protected/en.png).
+  hotlink: { reuse: true, expect: 'Hello world' },
 };
 
 if (import.meta.url === `file://${process.argv[1]}`) {
@@ -19,6 +21,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const browser = await chromium.launch();
   const page = await browser.newPage();
   for (const [name, f] of Object.entries(FIXTURES)) {
+    if (f.reuse) continue;
     const mode = f.vertical ? 'writing-mode:vertical-rl;' : '';
     const strip = f.lines?.map(([y, t]) => `<div style="position:absolute;left:60px;top:${y}px">${t}</div>`).join('');
     await page.setContent(strip
