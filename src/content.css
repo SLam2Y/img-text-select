@@ -1,0 +1,10 @@
+.its-layer { position: absolute; pointer-events: none; z-index: 2147483646; margin: 0; padding: 0; }
+.its-line {
+  position: absolute; pointer-events: auto; margin: 0; padding: 0;
+  color: transparent !important; background: none !important;
+  font-family: sans-serif; line-height: 1; white-space: pre;
+  transform-origin: 0 0; cursor: text;
+  user-select: text !important; -webkit-user-select: text !important;
+}
+.its-line::selection { background: rgba(26, 115, 232, .35); color: transparent; }
+.its-v { writing-mode: vertical-rl; }
