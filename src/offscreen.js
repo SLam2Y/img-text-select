@@ -10,6 +10,7 @@ const MODELS = {
   zh: ['models/rec.onnx', 'models/dict.txt'],
   ko: ['models/korean_rec.onnx', 'models/korean_dict.txt'],
 };
+const MAX_SIDE = 2500;
 const services = {};
 
 const asset = path => fetch(chrome.runtime.getURL(path));
@@ -34,23 +35,26 @@ function service(lang) {
 async function decode(url) {
   let bitmap;
   try {
-    const res = await fetch(url, { credentials: 'include' });
+    const res = await fetch(url, { credentials: 'omit' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     bitmap = await createImageBitmap(await res.blob());
   } catch (e) {
     throw new Error(`load: ${e.message}`);
   }
-  const ctx = new OffscreenCanvas(bitmap.width, bitmap.height).getContext('2d');
-  ctx.drawImage(bitmap, 0, 0);
-  const { width, height, data } = ctx.getImageData(0, 0, bitmap.width, bitmap.height);
+  const s = Math.min(1, MAX_SIDE / Math.max(bitmap.width, bitmap.height));
+  const w = Math.round(bitmap.width * s), h = Math.round(bitmap.height * s);
+  const ctx = new OffscreenCanvas(w, h).getContext('2d');
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(bitmap, 0, 0, w, h);
+  bitmap.close();
+  const { width, height, data } = ctx.getImageData(0, 0, w, h);
   return { width, height, data: new Uint8Array(data.buffer) };
 }
 
 chrome.runtime.onMessage.addListener((msg, _sender, reply) => {
   if (msg.target !== 'offscreen') return;
   Promise.all([decode(msg.url), service(msg.lang)])
-    .then(([image, ocr]) => ocr.recognize(image))
-    .then(results => reply({ lines: toLines(results) }))
+    .then(([image, ocr]) => ocr.recognize(image).then(results => reply({ lines: toLines(results), width: image.width })))
     .catch(e => { console.error(e); reply({ error: String(e?.message ?? e) }); });
   return true;
 });

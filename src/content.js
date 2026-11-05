@@ -64,9 +64,10 @@
     const img = target;
     btn.textContent = '…';
     try {
-      const lines = await ocr(img.currentSrc || img.src);
-      if (!lines.length) throw new Error('empty');
-      addLayer(img, lines);
+      const url = img.currentSrc || img.src;
+      const res = await ocr(url);
+      if (!res.lines.length) throw new Error('empty');
+      if (!layers.has(img)) addLayer(img, url, res);
       btn.hidden = true;
     } catch (e) {
       btn.textContent = ERRORS[e.message] ?? ERRORS.ocr;
@@ -75,20 +76,38 @@
 
   // --- OCR with per-page cache ---
   const cache = new Map();
-  function ocr(url) {
-    if (!cache.has(url)) {
-      cache.set(url, chrome.runtime.sendMessage({ type: 'ocr', url, lang: settings.lang }).then(r => {
-        if (r?.lines) return r.lines;
-        cache.delete(url);
-        throw new Error(r?.error?.startsWith('load:') ? 'load' : 'ocr');
-      }));
+  // Fetch from the page first: same-origin, blob:, data: and CORS images work with the page's cookies/Referer.
+  const toDataUrl = async url => {
+    try {
+      const blob = await (await fetch(url)).blob();
+      return await new Promise((ok, no) => {
+        const fr = new FileReader();
+        fr.onload = () => ok(fr.result);
+        fr.onerror = no;
+        fr.readAsDataURL(blob);
+      });
+    } catch {
+      return url;
     }
-    return cache.get(url);
+  };
+  function ocr(url) {
+    const key = `${settings.lang} ${url}`;
+    if (!cache.has(key)) {
+      cache.set(key, toDataUrl(url)
+        .then(u => chrome.runtime.sendMessage({ type: 'ocr', url: u, lang: settings.lang }))
+        .then(r => {
+          if (r?.lines) return { lines: r.lines, width: r.width };
+          throw new Error(r?.error?.startsWith('load:') ? 'load' : 'ocr');
+        })
+        .catch(e => { cache.delete(key); throw e.message === 'load' ? e : new Error('ocr'); }));
+    }
+    return cache.get(key);
   }
 
   // --- Transparent text layer ---
-  const layers = new Map(); // img -> { layer, lines }
-  function addLayer(img, lines) {
+  const layers = new Map(); // img -> { layer, lines, url, width }
+  const ro = new ResizeObserver(() => relayout());
+  function addLayer(img, url, { lines, width }) {
     const layer = document.createElement('div');
     layer.className = 'its-layer';
     for (const l of lines) {
@@ -97,16 +116,18 @@
       span.textContent = `${l.text}\n`;
       layer.append(span);
     }
-    document.body.append(layer);
-    layers.set(img, { layer, lines });
+    for (const t of ['selectstart', 'copy', 'contextmenu', 'mousedown']) layer.addEventListener(t, e => e.stopPropagation());
+    document.documentElement.append(layer);
+    layers.set(img, { layer, lines, url, width });
+    ro.observe(img);
     layout(img);
   }
 
   function layout(img) {
-    const { layer, lines } = layers.get(img);
-    if (!img.isConnected) { layer.remove(); layers.delete(img); return; }
+    const { layer, lines, url, width } = layers.get(img);
+    if (!img.isConnected || (img.currentSrc || img.src) !== url) { layer.remove(); layers.delete(img); ro.unobserve(img); return; }
     const r = img.getBoundingClientRect();
-    const k = r.width / img.naturalWidth;
+    const k = r.width / width;
     Object.assign(layer.style, { left: `${r.left + scrollX}px`, top: `${r.top + scrollY}px`, width: `${r.width}px`, height: `${r.height}px` });
     lines.forEach((l, i) => {
       const s = layer.children[i];
@@ -147,7 +168,7 @@
     const action = e.target.dataset?.a;
     const text = pop.dataset.text;
     if (action === 'copy') {
-      await navigator.clipboard.writeText(text).catch(() => document.execCommand('copy'));
+      try { await navigator.clipboard.writeText(text); } catch { document.execCommand('copy'); }
       out.textContent = 'Скопировано';
     }
     if (action === 'tr') {
