@@ -1,0 +1,44 @@
+<!doctype html>
+<meta charset="utf-8">
+<!-- Original artwork for store screenshots (rendered to panel.png by store/make-shots.mjs). -->
+<style>
+  @font-face { font-family: 'Unbounded'; src: url('../../src/fonts/unbounded-latin.woff2') format('woff2'); font-weight: 200 900; }
+  html, body { margin: 0; }
+  .panel {
+    position: relative; width: 980px; height: 620px; overflow: hidden;
+    background: #fff; border: 7px solid #1E2147; box-sizing: border-box;
+  }
+  /* speed lines from the robot */
+  .speed { position: absolute; inset: 0;
+    background: repeating-conic-gradient(from 0deg at 72% 74%, #1E2147 0 1.2deg, transparent 1.2deg 7deg);
+    opacity: .14; }
+  /* screentone floor */
+  .tails { position: absolute; inset: 0; }
+  .tone { position: absolute; left: 0; right: 0; bottom: 0; height: 230px;
+    background-image: radial-gradient(#1E2147 2px, transparent 2.4px); background-size: 11px 11px; opacity: .35;
+    -webkit-mask: linear-gradient(transparent, #000 60%); mask: linear-gradient(transparent, #000 60%); }
+  .robot { position: absolute; left: 600px; top: 372px; width: 230px; height: 200px; border-radius: 46% 46% 30% 30%;
+    background: #FFD93D; border: 6px solid #1E2147; }
+  .robot::before { content: ''; position: absolute; left: 50px; top: 66px; width: 26px; height: 34px; border-radius: 50%;
+    background: #1E2147; box-shadow: 92px 0 #1E2147; }
+  .robot::after { content: ''; position: absolute; left: 100px; top: -64px; width: 6px; height: 60px; background: #1E2147;
+    box-shadow: 0 -6px 0 8px #1E2147; border-radius: 3px; }
+  .mouth { position: absolute; left: 666px; top: 490px; width: 98px; height: 20px; border: 6px solid #1E2147;
+    border-top: 0; border-radius: 0 0 60px 60px; }
+  .bubble { position: absolute; background: #fff; border: 5px solid #1E2147; border-radius: 50%;
+    display: grid; place-items: center; text-align: center;
+    font: 800 30px/1.18 'Unbounded', sans-serif; color: #1E2147; letter-spacing: -.01em; }
+  .b1 { left: 60px; top: 46px; width: 430px; height: 250px; }
+  .b2 { left: 470px; top: 60px; width: 440px; height: 230px; }
+</style>
+<div class="panel" id="panel">
+  <div class="speed"></div>
+  <div class="tone"></div>
+  <svg class="tails" viewBox="0 0 966 606" width="966" height="606">
+    <path d="M300 280 L220 392 L370 270 Z" fill="#fff" stroke="#1E2147" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M640 270 L652 352 L720 270 Z" fill="#fff" stroke="#1E2147" stroke-width="5" stroke-linejoin="round"/>
+  </svg>
+  <div class="robot"></div><div class="mouth"></div>
+  <div class="bubble b1"><div>WAIT... THE ROBOT<br>ORDERED PIZZA<br>AGAIN?</div></div>
+  <div class="bubble b2"><div>WITH EXTRA<br>PINEAPPLE.<br>I'M NOT EVEN MAD.</div></div>
+</div>

@@ -177,7 +177,8 @@
     setTimeout(() => {
       const sel = getSelection();
       const text = sel.toString().trim();
-      if (!text || !sel.anchorNode?.parentElement?.closest('.its-layer')) { pop.hidden = true; return; }
+      const anchor = sel.anchorNode?.nodeType === Node.ELEMENT_NODE ? sel.anchorNode : sel.anchorNode?.parentElement;
+      if (!text || !anchor?.closest('.its-layer')) { pop.hidden = true; return; }
       const r = sel.getRangeAt(0).getBoundingClientRect();
       pop.dataset.text = text;
       out.textContent = '';
