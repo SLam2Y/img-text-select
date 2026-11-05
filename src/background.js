@@ -1,4 +1,4 @@
-import { gtxUrl, parseGtx } from './gtx.js';
+import { gtxUrl, parseGtx, joinLines } from './gtx.js';
 
 let creating;
 async function ensureOffscreen() {
@@ -41,7 +41,7 @@ chrome.runtime.onMessage.addListener((msg, sender, reply) => {
     return true;
   }
   if (msg.type === 'translate') {
-    fetch(gtxUrl(msg.text, msg.to))
+    fetch(gtxUrl(joinLines(msg.text), msg.to))
       .then(r => { if (!r.ok) throw new Error(`gtx ${r.status}`); return r.json(); })
       .then(json => reply({ text: parseGtx(json) }), fail(reply));
     return true;
