@@ -53,7 +53,7 @@
 Язык перевода и модель для корейского выбираются по клику на значок расширения.
 
 <p align="center">
-  <img src="store/screenshot-2-settings.png" alt="Окно настроек" width="70%">
+  <img src="docs/readme/settings.png" alt="Окно настроек" width="360">
 </p>
 
 ## Установка
