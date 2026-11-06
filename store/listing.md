@@ -66,7 +66,7 @@ Works for comics, memes, screenshots, infographics and any image with text.
 
 **Data usage:** Check «Website content» only. Disclosure: selected text is sent to Google Translate when the user clicks «Translate». Certify all three statements: not sold to third parties, not used for unrelated purposes, not used for creditworthiness or lending.
 
-**Privacy policy URL:** link to `PRIVACY.md` in the public GitHub repository, e.g. `https://github.com/SLam2y/img-text-select/blob/main/PRIVACY.md`.
+**Privacy policy URL:** link to `PRIVACY.md` in the public GitHub repository, e.g. `https://github.com/SLam2Y/img-text-select/blob/main/PRIVACY.md`.
 
 ## Notes for review
 

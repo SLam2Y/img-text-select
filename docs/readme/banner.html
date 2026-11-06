@@ -1,0 +1,31 @@
+<!doctype html>
+<meta charset="utf-8">
+<!-- README / social preview banner, rendered to banner.png by make.mjs -->
+<style>
+  @font-face { font-family: 'Unbounded'; src: url('../../src/fonts/unbounded-cyrillic.woff2') format('woff2'); font-weight: 200 900; unicode-range: U+0400-045F; }
+  @font-face { font-family: 'Unbounded'; src: url('../../src/fonts/unbounded-latin.woff2') format('woff2'); font-weight: 200 900; }
+  html, body { margin: 0; }
+  .b { width: 1280px; height: 640px; position: relative; overflow: hidden; background: #1E2147; color: #FBFBFE;
+       font-family: 'Unbounded', sans-serif; }
+  .b::before { content: ''; position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(251,251,254,.17) 2px, transparent 2.5px); background-size: 14px 14px;
+    -webkit-mask: linear-gradient(115deg, #000 0%, transparent 45%); }
+  .copy { position: absolute; left: 80px; top: 0; bottom: 0; width: 470px; display: grid; align-content: center; gap: 26px; }
+  .copy img { width: 92px; }
+  h1 { margin: 0; font-size: 58px; line-height: 1; font-weight: 700; letter-spacing: -.03em; }
+  .mark { justify-self: start; background: #FFD93D; color: #1E2147; font-size: 24px; font-weight: 600; line-height: 1.25;
+          padding: 8px 14px; border-radius: 6px; transform: rotate(-1.5deg); }
+  .langs { font: 500 16px/1 system-ui, sans-serif; color: #C9CBE6; letter-spacing: .02em; }
+  .shot { position: absolute; left: 600px; top: 70px; width: 760px; height: 480px; border-radius: 18px; overflow: hidden;
+          border: 6px solid #FBFBFE; transform: rotate(3deg); box-shadow: 0 30px 60px rgba(0,0,0,.45); }
+  .shot img { position: absolute; left: -385px; top: -110px; width: 1280px; }
+</style>
+<div class="b" id="b">
+  <div class="copy">
+    <img src="../../icons/icon-128.png" alt="">
+    <h1>Image Text<br>Select</h1>
+    <div class="mark">Выделяй текст прямо<br>на картинках</div>
+    <div class="langs">English · 中文 · 日本語 · 한국어  →  14 языков перевода</div>
+  </div>
+  <div class="shot"><img src="../../store/screenshot-1-translate.png" alt=""></div>
+</div>
